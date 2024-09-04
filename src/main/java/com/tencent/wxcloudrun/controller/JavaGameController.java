@@ -54,16 +54,18 @@ public class JavaGameController {
     HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.setContentType(MediaType.TEXT_PLAIN);
 
-    Map<String, Object> reqBody = new HashMap<>();
-    reqBody.put("touser", openId);
-    reqBody.put("msgtype", "text");
-    reqBody.put("text", new HashMap<String, String>() {{
-      put("content", String.format("云托管接收消息推送成功，内容如下：\n %s", body));
-    }});
+    logger.info(String.format("云托管接收消息推送成功，内容如下：\n %s", body));
+//    Map<String, Object> reqBody = new HashMap<>();
+//    reqBody.put("ToUserName", openId);
+//    reqBody.put("msgtype", "text");
+//    reqBody.put("text", new HashMap<String, String>() {{
+//      put("content", String.format("云托管接收消息推送成功，内容如下：\n %s", body));
+//    }});
     try {
-      String wxApiURL = "http://api.weixin.qq.com/cgi-bin/message/custom/send";
-      Map result = restTemplate.postForObject(wxApiURL, reqBody, Map.class);
-      logger.info("发送回复结果: {} ", result);
+//      String wxApiURL = "http://api.weixin.qq.com/cgi-bin/message/custom/send";
+//      Map result = restTemplate.postForObject(wxApiURL, reqBody, Map.class);
+//
+//      logger.info("发送回复结果: {} ", result);
       return ResponseEntity.ok().headers(responseHeaders).body("success");
     } catch (HttpClientErrorException e) {
       logger.error("sendMsg errorMsg={}, openId={}, cause by client error", e.getMessage(), openId);
