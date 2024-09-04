@@ -27,11 +27,11 @@ import java.util.Optional;
 public class JavaGameController {
   private final RestTemplate restTemplate = new RestTemplate();
 
-  final CounterService counterService;
+//  final CounterService counterService;
   final Logger logger;
 
   public JavaGameController(@Autowired CounterService counterService) {
-    this.counterService = counterService;
+//    this.counterService = counterService;
     this.logger = LoggerFactory.getLogger(JavaGameController.class);
   }
 
@@ -55,17 +55,21 @@ public class JavaGameController {
     responseHeaders.setContentType(MediaType.TEXT_PLAIN);
 
     logger.info(String.format("云托管接收消息推送成功，内容如下：\n %s", body));
-//    Map<String, Object> reqBody = new HashMap<>();
-//    reqBody.put("ToUserName", openId);
-//    reqBody.put("msgtype", "text");
-//    reqBody.put("text", new HashMap<String, String>() {{
-//      put("content", String.format("云托管接收消息推送成功，内容如下：\n %s", body));
-//    }});
+    Map<String, Object> resBody = new HashMap<>();
+    resBody.put("ToUserName", body.get("FromUserName"));
+    resBody.put("FromUserName", body.get("ToUserName"));
+    resBody.put("CreateTime", System.currentTimeMillis());
+    resBody.put("MsgType", "text");
+    resBody.put("Content", String.format("云托管接收消息推送成功，内容如下：\n %s", body));
     try {
-//      String wxApiURL = "http://api.weixin.qq.com/cgi-bin/message/custom/send";
-//      Map result = restTemplate.postForObject(wxApiURL, reqBody, Map.class);
-//
-//      logger.info("发送回复结果: {} ", result);
+      String wxApiURL = "http://api.weixin.qq.com/cgi-bin/message/custom/send?from_appid=wx69c2519cf5c27136";
+      //使用restTemplate请求wxApiURL， post传递json参数resBody
+      String res = restTemplate.postForObject(wxApiURL, resBody, String.class);
+
+
+//      Map result = restTemplate.postForObject(wxApiURL, resBody, Map.class);
+
+      logger.info("发送回复结果: {} ", res);
       return ResponseEntity.ok().headers(responseHeaders).body("success");
     } catch (HttpClientErrorException e) {
       logger.error("sendMsg errorMsg={}, openId={}, cause by client error", e.getMessage(), openId);
@@ -78,36 +82,36 @@ public class JavaGameController {
 
 
 
-
-  /**
-   * 更新计数，自增或者清零
-   * @param request {@link CounterRequest}
-   * @return API response json
-   */
-  @PostMapping(value = "/api/count")
-  ApiResponse create(@RequestBody CounterRequest request) {
-    logger.info("/api/count post request, action: {}", request.getAction());
-
-    Optional<Counter> curCounter = counterService.getCounter(1);
-    if (request.getAction().equals("inc")) {
-      Integer count = 1;
-      if (curCounter.isPresent()) {
-        count += curCounter.get().getCount();
-      }
-      Counter counter = new Counter();
-      counter.setId(1);
-      counter.setCount(count);
-      counterService.upsertCount(counter);
-      return ApiResponse.ok(count);
-    } else if (request.getAction().equals("clear")) {
-      if (!curCounter.isPresent()) {
-        return ApiResponse.ok(0);
-      }
-      counterService.clearCount(1);
-      return ApiResponse.ok(0);
-    } else {
-      return ApiResponse.error("参数action错误");
-    }
-  }
+//
+//  /**
+//   * 更新计数，自增或者清零
+//   * @param request {@link CounterRequest}
+//   * @return API response json
+//   */
+//  @PostMapping(value = "/api/count")
+//  ApiResponse create(@RequestBody CounterRequest request) {
+//    logger.info("/api/count post request, action: {}", request.getAction());
+//
+//    Optional<Counter> curCounter = counterService.getCounter(1);
+//    if (request.getAction().equals("inc")) {
+//      Integer count = 1;
+//      if (curCounter.isPresent()) {
+//        count += curCounter.get().getCount();
+//      }
+//      Counter counter = new Counter();
+//      counter.setId(1);
+//      counter.setCount(count);
+//      counterService.upsertCount(counter);
+//      return ApiResponse.ok(count);
+//    } else if (request.getAction().equals("clear")) {
+//      if (!curCounter.isPresent()) {
+//        return ApiResponse.ok(0);
+//      }
+//      counterService.clearCount(1);
+//      return ApiResponse.ok(0);
+//    } else {
+//      return ApiResponse.error("参数action错误");
+//    }
+//  }
   
 }
