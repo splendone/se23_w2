@@ -5,6 +5,7 @@ import com.tencent.wxcloudrun.config.ApiResponse;
 import com.tencent.wxcloudrun.dto.CounterRequest;
 import com.tencent.wxcloudrun.model.Counter;
 import com.tencent.wxcloudrun.service.CounterService;
+import com.tencent.wxcloudrun.service.JavaGameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,11 @@ import java.util.Optional;
 public class JavaGameController {
   private final RestTemplate restTemplate = new RestTemplate();
 
-//  final CounterService counterService;
+  final JavaGameService javaGameService;
   final Logger logger;
 
-  public JavaGameController(@Autowired CounterService counterService) {
-//    this.counterService = counterService;
+  public JavaGameController(@Autowired JavaGameService javaGameService) {
+    this.javaGameService = javaGameService;
     this.logger = LoggerFactory.getLogger(JavaGameController.class);
   }
 
@@ -61,31 +62,12 @@ public class JavaGameController {
     resBody.put("FromUserName", body.get("ToUserName"));
     resBody.put("CreateTime", System.currentTimeMillis());
     resBody.put("MsgType", "text");
-    resBody.put("Content", String.format("云托管接收消息推送成功，内容如下：%s", body));
+    resBody.put("Content", javaGameService.genContent(body));
     //将resBody转成json字符串
     String res = new Gson().toJson(resBody);
     logger.info(String.format("云托管回复消息，内容如下： %s", res));
     return ResponseEntity.ok().headers(responseHeaders).body(res);
 
-
-//    try {
-////      String wxApiURL = "http://api.weixin.qq.com/cgi-bin/message/custom/send";
-////      //使用restTemplate请求wxApiURL， post传递json参数resBody
-////      String res = restTemplate.postForObject(wxApiURL, resBody, String.class);
-//
-//
-////      Map result = restTemplate.postForObject(wxApiURL, resBody, Map.class);
-//
-////      logger.info("发送回复结果: {} ", res);
-////      return ResponseEntity.ok().headers(responseHeaders).body("success");
-//
-//    } catch (HttpClientErrorException e) {
-//      logger.error("sendMsg errorMsg={}, openId={}, cause by client error", e.getMessage(), openId);
-//      return ResponseEntity.ok().headers(responseHeaders).body("error");
-//    } catch (HttpServerErrorException e) {
-//      logger.error("sendMsg errorMsg={}, openId={}, cause by server error", e.getMessage(), openId);
-//      return ResponseEntity.ok().headers(responseHeaders).body("error");
-//    }
   }
 
 
