@@ -42,6 +42,6 @@ public class JavaGameServiceImpl implements JavaGameService {
     }
 
     private Optional<User> getUser(String uid){
-        return Optional.ofNullable(usersMapper.getStatus(uid));
+        return Optional.ofNullable(usersMapper.getUser(uid));
     }
 }
