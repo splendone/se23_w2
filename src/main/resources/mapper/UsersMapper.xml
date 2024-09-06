@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.tencent.wxcloudrun.dao.CountersMapper">
 
-    <resultMap id="countersMapper" type="com.tencent.wxcloudrun.model.Counter">
+    <resultMap id="usersMapper" type="com.tencent.wxcloudrun.model.User">
         <id property="id" column="id"/>
         <result property="uid" column="uid"/>
         <result property="name" column="name"/>
@@ -12,13 +12,13 @@
         <result property="updatedAt" column="updatedAt" javaType="java.time.LocalDateTime"  />
     </resultMap>
 
-    <select id="getCounter" resultMap="countersMapper" parameterType="java.lang.Integer">
+    <select id="getStatus" resultMap="usersMapper" parameterType="java.lang.Integer">
         SELECT `id`, `count`, `createdAt`, `updatedAt`
         FROM Counters
         WHERE id = #{id}
     </select>
 
-    <update id="upsertUser" parameterType="com.tencent.wxcloudrun.model.Uer">
+    <update id="upsertUser" parameterType="com.tencent.wxcloudrun.model.User">
         INSERT INTO `Users`(`id`, `uid`, `name`, `health`, `step`)
         VALUE(#{id}, #{uid}, #{name}, #{health}, #{step})
         ON DUPLICATE KEY UPDATE uid=#{uid}, name=#{name}, health=#{health}, step=#{step}
