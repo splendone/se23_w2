@@ -12,10 +12,10 @@
         <result property="updatedAt" column="updatedAt" javaType="java.time.LocalDateTime"  />
     </resultMap>
 
-    <select id="getStatus" resultMap="usersMapper" parameterType="java.lang.String">
-        SELECT `id`, `count`, `createdAt`, `updatedAt`
-        FROM Counters
-        WHERE id = #{id}
+    <select id="getUser" resultMap="usersMapper" parameterType="java.lang.String">
+        SELECT `id`, `uid`, `name`, `health`, `step`, `createdAt`, `updatedAt`
+        FROM Users
+        WHERE uid = #{uid}
     </select>
 
     <update id="upsertUser" parameterType="com.tencent.wxcloudrun.model.User">
