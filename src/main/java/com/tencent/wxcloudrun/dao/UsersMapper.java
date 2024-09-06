@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UsersMapper {
 
-  User getStatus(@Param("uid") String uid);
+  User getUser(@Param("uid") String uid);
 
   void upsertUser(User user);
 
